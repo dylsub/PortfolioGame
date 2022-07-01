@@ -22,7 +22,6 @@ loadSound('powerup', '/beeCarefulAssets/audio/powerup.wav')
 
 
 scene("game", () => {
-    console.log(ASCII_CHARS)
     const music = play("music", {
         volume: 0.2,
         loop: true,
@@ -33,24 +32,40 @@ scene("game", () => {
         z(-1),
     ])
 
-    let isMute = false;
+
     const mute = add([
-        sprite('mute'),
+        sprite('unmute'),
         area(0.8),
         pos(165, 193),
         scale(0.8),
         z(10),
     ])
 
+    let isMute = false;
+    if (localStorage.getItem("isMute")) {
+        if (localStorage.getItem("isMute") == "true") {
+            isMute = true;
+            mute.use(sprite("mute"));
+            music.pause();
+        }
+        if (localStorage.getItem("isMute") == "false") {
+            isMute = false;
+            mute.use(sprite("unmute"));
+            music.play();
+        }
+    }
+
     mute.onClick(() => {
         if (!isMute) {
             isMute = true;
-            mute.use(sprite("unmute"));
+            localStorage.setItem("isMute", "true")
+            mute.use(sprite("mute"));
             music.pause();
         }
         else if (isMute) {
             isMute = false;
-            mute.use(sprite("mute"));
+            localStorage.setItem("isMute", "false")
+            mute.use(sprite("unmute"));
             music.play();
         }
     })
@@ -196,9 +211,9 @@ scene("game", () => {
         isKeyDown = false;
     })
 
-    onKeyDown("space", () => {
-        debug.log(player.pos.x + ", " + player.pos.y + ", " + enemies);
-    });
+    // onKeyDown("space", () => {
+    //     debug.log(player.pos.x + ", " + player.pos.y + ", " + enemies);
+    // });
 
     //###########################################################//
 
